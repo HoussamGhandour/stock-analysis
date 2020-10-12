@@ -3,14 +3,14 @@
 ## Overview of Project
 Steve requested our consultant team to help him with developing a VBA script to analyze the performance of 12 stocks. He is mainly interested to see the volume of stock exchange as well as the return in investment so that he can provide a recommendation to his parents on which stock(s) to invest in. The data that was provided to our team included information for 12 stocks during the years of 2017 and 2018. The data included the following attributes: 
 
-  **Ticker**: This column stores data for the abbreviation of the stock name of interest
-  **Date**: This column provides the day where the stock exchange was active  
-  **Open**: This column provides the opening stock price during the day  
-  **High**: Provides the highest value the stock reached during the specific day  
-  **Low**: Provides the lowest value the stock reached during the specific day  
-  **Close**: Provides the closing value the stock reached during the specific day  
-  **Adj Close**: There was no explanation provided for this column, but it wasn't used in the analysis. The naming sugests that this is the adjusted closing price of the stock  
-  **Volume**: This column provides the volume of exchange  
+  - **Ticker**: This column stores data for the abbreviation of the stock name of interest  
+  - **Date**: This column provides the day where the stock exchange was active  
+  - **Open**: This column provides the opening stock price during the day  
+  - **High**: Provides the highest value the stock reached during the specific day  
+  - **Low**: Provides the lowest value the stock reached during the specific day  
+  - **Close**: Provides the closing value the stock reached during the specific day  
+  - **Adj Close**: There was no explanation provided for this column, but it wasn't used in the analysis. The naming sugests that this is the adjusted closing price of the stock 
+  - **Volume**: This column provides the volume of exchange  
 
 We provided Steve the summary results and a VBA script. He later noticed that the run time of 0.5 seconds is low for the data he provided us (12 stocks) but he is anticipating to have a larger dataset with more stocks so he asked our team to refactor the code in the meantime and make it more efficient so it can handle larger dataset with less run time. Our second project with Steve started here.
 
@@ -20,6 +20,38 @@ The refactoring process was focused on eliminating the need to iterate through t
 ![Runtime of 2017](https://github.com/HoussamGhandour/stock-analysis/blob/main/Resources/2017RefactoredRunTime.PNG)
 ![Runtime of 2017](https://github.com/HoussamGhandour/stock-analysis/blob/main/Resources/2018RefactoredRunTime.PNG)
 
+An excerpt of the refactored code that shows the **one** iteration of the whole dataset can be viewed below:
+```
+'2a) Create a for loop to initialize the tickerVolumes to zero.
+    For i = 0 To 11
+    
+        tickerVolumes(i) = 0
+        
+    Next i
+                
+    '2b) Loop over all the rows in the spreadsheet.
+    For i = 2 To RowCount
+        
+        '3a) Increase volume for current ticker
+        If Cells(i, 1).Value = tickers(tickerIndex) Then
+        tickerVolumes(tickerIndex) = tickerVolumes(tickerIndex) + Cells(i, 8)
+        End If
+        
+        '3b) Check if the current row is the first row with the selected tickerIndex.
+        If Cells(i, 1) <> Cells(i - 1, 1) Then
+        tickerStartingPrices(tickerIndex) = Cells(i, 6)
+        End If
+        
+        '3c) check if the current row is the last row with the selected ticker
+        If Cells(i, 1) <> Cells(i + 1, 1) Then
+        tickerEndingPrices(tickerIndex) = Cells(i, 6)
+        '3d Increase the tickerIndex.
+        tickerIndex = tickerIndex + 1
+        End If
+            
+    Next i
+    
+```
 ## Summary
 
 ### What are some advantages and disadvantages of refactoring code in general?
